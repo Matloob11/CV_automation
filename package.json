@@ -1,0 +1,26 @@
+{
+  "name": "cv-auto",
+  "version": "1.0.0",
+  "description": "Upload CVs, extract candidate details with OpenAI, preview rows, and export Excel.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test --test-concurrency=1"
+  },
+  "dependencies": {
+    "archiver": "^8.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "mammoth": "^1.11.0",
+    "multer": "^2.0.2",
+    "openai": "^6.10.0",
+    "pdf-parse": "^2.4.5"
+  },
+  "overrides": {
+    "uuid": "^11.1.1"
+  }
+}

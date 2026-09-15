@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CV Auto Extractor</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace">
+        <header class="topbar">
+          <div class="brand-lockup">
+            <div>
+              <h1>CV Intelligence Desk</h1>
+              <p>CV extraction and Excel export</p>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <a class="nav-link" href="/history.html">Candidate History</a>
+            <div class="status-pill" id="serverStatus">Checking server</div>
+          </div>
+        </header>
+
+        <form id="uploadForm" class="upload-panel">
+          <div class="input-grid">
+            <div class="input-row">
+              <label class="field-label" for="appliedPost">Default applied post</label>
+              <div class="input-shell">
+                <input
+                  id="appliedPost"
+                  name="appliedPost"
+                  type="text"
+                  placeholder="Example: Sales Executive"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div class="input-row">
+              <label class="field-label" for="bitrixStage">Bitrix24 CRM Target Stage</label>
+              <div class="input-shell">
+                <select id="bitrixStage" name="bitrixStage">
+                  <option value="DT1156_44:NEW" selected>Applied (New / Inbound)</option>
+                  <option value="DT1156_44:PREPARATION">1st Stage - Initial Interview</option>
+                  <option value="DT1156_44:CLIENT">2nd Stage - Interview</option>
+                  <option value="DT1156_44:1">Final Interview</option>
+                  <option value="DT1156_44:2">Hired</option>
+                  <option value="DT1156_44:3">Rejected</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="upload-grid">
+            <label class="dropzone" for="cvs">
+              <input id="cvs" name="cvs" type="file" multiple accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.webp,.xlsx,.xls,.csv" />
+              <span class="drop-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48">
+                  <path d="M14 5h14l8 8v30H14z" />
+                  <path d="M28 5v10h8" />
+                  <path d="M18 31h12M18 24h12" />
+                </svg>
+              </span>
+              <span class="drop-content">
+                <span class="dropzone-title">Upload CV / Excel Files</span>
+                <span class="dropzone-meta" id="fileMeta">PDF, DOCX, XLSX, CSV, TXT, Images supported</span>
+                <span class="drop-action">Choose Files</span>
+              </span>
+            </label>
+
+            <label class="dropzone folder-zone" for="folderCvs">
+              <input id="folderCvs" type="file" webkitdirectory directory multiple />
+              <span class="drop-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48">
+                  <path d="M5 14h15l4 5h19v22H5z" />
+                  <path d="M5 14v-4h14l4 5" />
+                </svg>
+              </span>
+              <span class="drop-content">
+                <span class="dropzone-title">Upload CV Folder</span>
+                <span class="dropzone-meta" id="folderMeta">Image pages are grouped by candidate</span>
+                <span class="drop-action">Choose Folder</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button type="submit" id="extractButton">Extract Data</button>
+            <button type="button" id="downloadButton" disabled>Download Excel</button>
+            <button type="button" id="failedFilesButton" hidden>Failed Files (0)</button>
+          </div>
+        </form>
+
+        <section class="progress-panel" id="summaryStrip" hidden>
+          <div class="stat-card">
+            <strong id="statusCount">queued</strong>
+            <span>Status</span>
+          </div>
+          <div class="stat-card stat-wide">
+            <strong id="processedCount">0 processed</strong>
+            <span>Files / pages</span>
+          </div>
+          <div class="stat-card">
+            <strong id="successCount">0 success</strong>
+            <span>Candidates</span>
+          </div>
+          <div class="stat-card">
+            <strong id="failedCount">0 failed</strong>
+            <span>Failed files</span>
+          </div>
+          <div class="stat-card">
+            <strong id="groupedCount">0 grouped</strong>
+            <span>Grouped pages</span>
+          </div>
+          <div class="current-file">
+            <span>Current file</span>
+            <strong id="currentFile">Waiting</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <span id="progressFill"></span>
+          </div>
+        </section>
+
+        <section class="table-wrap" aria-live="polite">
+          <table>
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Phone</th>
+                <th>Gender</th>
+                <th>DOB</th>
+                <th>Total Exp.</th>
+                <th>Education</th>
+                <th>Designation</th>
+                <th>Applied Post</th>
+                <th>City</th>
+                <th>Address</th>
+                <th>Summary</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody">
+              <tr>
+                <td colspan="11" class="empty-state">Upload CVs to see extracted rows here.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="mobile-results" id="mobileResults" aria-live="polite">
+          <div class="empty-card">Upload CVs to see extracted candidate details.</div>
+        </section>
+
+        <footer class="footer-line">
+          <span>Secure - Reliable - Intelligent</span>
+          <span>AI-Powered CV Intelligence</span>
+        </footer>
+      </section>
+    </main>
+
+    <dialog class="failed-dialog" id="failedFilesDialog" aria-labelledby="failedDialogTitle">
+      <header class="failed-dialog-header">
+        <div>
+          <span>Processing report</span>
+          <h2 id="failedDialogTitle">Failed files</h2>
+        </div>
+        <button type="button" class="dialog-close" id="closeFailedDialog" aria-label="Close failed files">X</button>
+      </header>
+      <div class="failed-dialog-body">
+        <p id="failedFilesSummary"></p>
+        <div class="failed-files-list" id="failedFilesList"></div>
+      </div>
+    </dialog>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

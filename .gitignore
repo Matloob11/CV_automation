@@ -1,0 +1,46 @@
+# Secrets — never commit real keys or webhook tokens
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Runtime uploads, extraction cache, job snapshots, and Excel exports
+uploads/
+storage/*
+!storage/README.md
+!storage/.gitkeep
+
+# Local candidate workbooks and CV files left in the workspace
+Hired Emplyee/
+Hired Employee/
+*.xlsx
+*.xls
+*.csv
+*.pdf
+*.doc
+*.docx
+*.rtf
+*.jpg
+*.jpeg
+*.png
+*.webp
+!public/**/*.png
+!public/**/*.jpg
+!public/**/*.svg
+!public/**/*.ico
+
+# Logs and local tooling
+*.log
+.playwright-mcp/
+.serena/
+.deploy/
+.cursor/
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

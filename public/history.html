@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candidate History - CV Auto</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace history-workspace">
+        <header class="topbar">
+          <div class="brand-lockup">
+            <div>
+              <h1>Candidate History</h1>
+              <p>Processed CV archive</p>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <a class="nav-link" href="/">Extraction Desk</a>
+            <div class="status-pill" id="historyLiveStatus">Live history</div>
+          </div>
+        </header>
+
+        <section class="history-controls" aria-label="Candidate history controls">
+          <form class="history-search" id="historySearchForm" role="search">
+            <label for="historySearch">Search candidates</label>
+            <div class="history-search-row">
+              <input
+                id="historySearch"
+                type="search"
+                placeholder="Name, phone, email, post, city or education"
+                autocomplete="off"
+              />
+              <button class="compact-button" type="submit">Search</button>
+            </div>
+          </form>
+
+          <label class="page-size-control" for="historyPageSize">
+            <span>Rows per page</span>
+            <select id="historyPageSize">
+              <option value="25">25</option>
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="history-summary" aria-label="History summary">
+          <div class="history-stat">
+            <span>Matching candidates</span>
+            <strong id="historyTotal">0</strong>
+          </div>
+          <div class="history-stat">
+            <span>All candidates</span>
+            <strong id="historyAllTotal">0</strong>
+          </div>
+          <div class="history-stat">
+            <span>Matching batches</span>
+            <strong id="historyBatchCount">0</strong>
+          </div>
+          <form class="range-controls" id="rangeDownloadForm">
+            <label for="rangeFrom">From</label>
+            <input id="rangeFrom" type="number" inputmode="numeric" min="1" value="1" />
+            <label for="rangeTo">To</label>
+            <input id="rangeTo" type="number" inputmode="numeric" min="1" value="1" />
+            <button class="compact-button" id="downloadRangeButton" type="submit" disabled>Download range</button>
+            <label for="historyCrmStage" style="margin-left: 10px;">CRM Stage:</label>
+            <select id="historyCrmStage" class="compact-select">
+              <option value="DT1156_44:NEW" selected>Applied</option>
+              <option value="DT1156_44:PREPARATION">1st Stage - Initial Interview</option>
+              <option value="DT1156_44:CLIENT">2nd Stage - Interview</option>
+              <option value="DT1156_44:1">Final Interview</option>
+              <option value="DT1156_44:2">Hired</option>
+              <option value="DT1156_44:3">Rejected</option>
+            </select>
+            <button class="compact-button secondary-button" id="syncAllCrmButton" type="button">Sync All to CRM</button>
+          </form>
+        </section>
+
+        <div class="history-message" id="historyMessage" role="alert" hidden></div>
+
+        <section class="table-wrap history-table-wrap" aria-live="polite">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Phone</th>
+                <th>Designation</th>
+                <th>Applied Post</th>
+                <th>City</th>
+                <th>Total Exp.</th>
+                <th>Processed</th>
+                <th>Bitrix CRM</th>
+                <th>CV</th>
+              </tr>
+            </thead>
+            <tbody id="historyResultsBody">
+              <tr>
+                <td colspan="9" class="empty-state">Loading candidate history.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="history-mobile-results" id="historyMobileResults" aria-live="polite"></section>
+
+        <nav class="history-pagination" aria-label="Candidate history pages">
+          <button class="compact-button secondary-button" id="previousHistoryPage" type="button" disabled>Previous</button>
+          <div>
+            <strong id="historyPageLabel">Page 1 of 1</strong>
+            <span id="historyResultWindow">0 results</span>
+          </div>
+          <button class="compact-button secondary-button" id="nextHistoryPage" type="button" disabled>Next</button>
+        </nav>
+
+        <footer class="footer-line">
+          <span>Secure - Reliable - Intelligent</span>
+          <span>AI-Powered CV Intelligence</span>
+        </footer>
+      </section>
+    </main>
+
+    <script src="/history.js" type="module"></script>
+  </body>
+</html>

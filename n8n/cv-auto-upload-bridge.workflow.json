@@ -1,0 +1,145 @@
+{
+  "name": "CV Auto - Upload Bridge to Backend",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cv-auto-upload",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -520,
+        0
+      ],
+      "id": "a58d8cf9-8a83-49cf-8f3f-5690c658f9ec",
+      "name": "CV Upload Webhook",
+      "webhookId": "04c6f0ba-bcae-4788-9150-986a5f46e912"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{(($json.query && $json.query.backendUrl) || ($json.headers && $json.headers['x-backend-url']) || '').replace(/\\/$/, '') + '/api/process-cvs'}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "={{$json.headers['content-type']}}"
+            },
+            {
+              "name": "x-workflow-secret",
+              "value": "={{$json.headers['x-workflow-secret']}}"
+            },
+            {
+              "name": "x-forwarded-by",
+              "value": "n8n-cv-auto"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "rawContentType": "={{$json.headers['content-type']}}",
+        "inputDataFieldName": "data",
+        "options": {
+          "timeout": 600000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -120,
+        0
+      ],
+      "id": "d1c8e45d-67d2-4a98-85b2-ecfd8d07a50d",
+      "name": "Forward Upload to Backend",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{JSON.stringify($json)}}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "content-type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        300,
+        0
+      ],
+      "id": "6924a391-c9a6-45f4-bdb7-0467c3d13277",
+      "name": "Return Extraction Result"
+    },
+    {
+      "parameters": {
+        "content": "Import this workflow, activate it, then use the production URL ending in /webhook/cv-auto-upload as N8N_WEBHOOK_URL in the backend .env. No OpenAI credential is needed inside n8n; the backend reads OPENAI_API_KEY securely from .env. Large batches are handled asynchronously by the backend and return a jobId/progress response.",
+        "height": 180,
+        "width": 360
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -260
+      ],
+      "id": "f2662897-db39-41ca-92a9-db243e5d33b0",
+      "name": "Setup Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "CV Upload Webhook": {
+      "main": [
+        [
+          {
+            "node": "Forward Upload to Backend",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Forward Upload to Backend": {
+      "main": [
+        [
+          {
+            "node": "Return Extraction Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "93cf36a6-d28c-4c7a-b3b0-cb299255cc00",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "CV_AUTO_UPLOAD_BRIDGE",
+  "tags": []
+}
